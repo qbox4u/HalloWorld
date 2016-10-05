@@ -125,6 +125,10 @@ function wf_QBox4u_TagFunctionRender( $input, array $args, Parser $parser, PPFra
 	$html_body .= '$attributes[1] '.$attr[1]."<br>\n";
 	$html_body .= ' The data between 2 TAGS is:'.htmlspecialchars( $input )."\n";
 
+/*
+From here you can create your own PHP Appication 
+You only need to remember that the additional data you like to dispay resides inside $html_body 
+*/
 	$output = $parser->recursiveTagParse( $html_body, $frame );
 	
   return array( $output, 'noparse' => false, 'isHTML' => false);
@@ -143,7 +147,10 @@ function wf_QBox4u_ParserFunction_Render( &$parser  ){
 	$html_body .= 'my Parser hook contains '.count($arg)." elements<br />\n";
 	$html_body .= '$attributes[0] <strong>'.($arg[0])."</strong><br>\n";
 	$html_body .= '$attributes[1] <strong>'.($arg[1])."</strong><br>\n";
-	
+/*
+From here you can create your own PHP Appication 
+You only need to remember that the additional data you like to dispay resides inside $html_body 
+*/	
 	$output = $html_body;
 	
   return array( $output, 'noparse' => false, 'isHTML' => false);
