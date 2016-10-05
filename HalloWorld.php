@@ -58,13 +58,14 @@ if( !defined( 'MEDIAWIKI' ) )  {
  * The extension data is available in an wiki at the page [[Special:Version]]
  **/  
 
-$wfExtensionCredits['other'][] = array(
-    'path'           => __FILE__,
-	'name'           => 'QBox4u_HalloWorld',
-	'version'        => '1.0',
-	'author'         => array( 'https://www.linkedin.com/in/jan-boer-a24640113','qbox4u@gmail.com', 'your name' ),
-	'url'            => 'https://www.mediawiki.org/wiki/Extension_talk:ProtectText',
-	'description'    => 'This extension is my first extension you have created'
+$wgExtensionCredits['other'][] = array(
+    'path'          => __FILE__,
+	'name'          => 'QBox4u_HalloWorld',
+	'version'       => '1.0',
+	'author'        =>  array( 'https://www.linkedin.com/in/jan-boer-a24640113','qbox4u@gmail.com', 'your own name' ),
+	'description'   => 'This extension is my first extension you have created using <code>&lt;TAG1&gt;</code> and <code><nowiki>{{#FUNCTION1: arg1 | arg2 }}</nowiki></code>',
+	'license-name' 	=> 'Licence',
+	'url'           => 'https://www.mediawiki.org/wiki/Extension:HalloWorld'
 );
 
 if ( defined( 'MW_SUPPORTS_PARSERFIRSTCALLINIT' ) ) {
