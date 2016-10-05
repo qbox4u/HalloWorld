@@ -13,3 +13,7 @@ Hallo world
 {{#FUNCTION1:Hallo|World}}
 
 ********End of COPY into page ***********************
+
+#release-notes
+
+First setup
