@@ -21,6 +21,9 @@
  *  To activate this extension, add the following into your LocalSettings.php file:
  *  require_once( "$IP/extensions/HalloWorld/HalloWorld.php");
  *
+ *  Create an Mediawiki page and add the following 2 lines 
+ *  <TAG1 arg1="xxx" arg2="xxx">Hallo world</TAG1>
+ *  {{#FUNCTION1:Hallo|World}}
  *
  *  @ingroup Extensions
  *  @author Jan boer <qbox4u@gmail.com>
@@ -64,51 +67,30 @@ $wfExtensionCredits['other'][] = array(
 	'description'    => 'This extension is my first extension you have created'
 );
 
-
-/**
- * Avoid unstubbing $wgParser too early on modern (1.12+) MW versions, as per r35980
- * Define a setup function
- *
- **/
 if ( defined( 'MW_SUPPORTS_PARSERFIRSTCALLINIT' ) ) {
-	$wgHooks['ParserFirstCallInit'][] = 'wf_QBox4u_ParserFunction_Setup';
-   } 
-     else {
-	 $wgExtensionFunctions[] = 'wf_QBox4u_ParserFunction_Setup';
-     }
+	$wgHooks['ParserFirstCallInit'][] = 'wf_QBox4u_ParserFunction_Setup'; } 
+       else { $wgExtensionFunctions[] = 'wf_QBox4u_ParserFunction_Setup'; }
  
-function wf_QBox4u_ParserFunction_Setup( &$Parser ) {
+function wf_QBox4u_ParserFunction_Setup( &$parser ) {
 
-        # Set a function hook associating the 'First_hook' magic word with our function 
-	$Parser->setFunctionHook( 'MyFirsthook', 'wf_QBox4u_ParserFunction_Render' );
-	return true;
+		// set the hook <TAG1> Hallo World </TAG1>
+		$parser->setHook( 'TAG1', 'wf_QBox4u_TagFunctionRender' );
+		// set the hook {{#MyFirsthook:Hallo|World}}
+		$parser->setFunctionHook( 'FUNCTION1', 'wf_QBox4u_ParserFunction_Render' );
+      return true;
 }
 
-/**
- * Add a hook to initialise the magic word
- *
- **/
-$wgHooks['LanguageGetMagic'][]       = 'wf_QNAP_First_Example_Magic';
+$wgHooks['LanguageGetMagic'][]       = 'wf_QBox4u_First_Example_Magic';
 
-
-/**
- * Add the magic word
- * The first array element is whether to be case sensitive
- *  in this case 
- *   0 it is not case sensitive, 
- *   1 would be sensitive
- * All remaining elements are synonyms for our parser function
- *
- **/
-function wf_QNAP_First_Example_Magic( &$magicWords, $langCode ) {
-
-        $magicWords['MyFirsthook'] = array( 0, 'MyFirsthook' );
+function wf_QBox4u_First_Example_Magic( &$magicWords, $langCode ) {
+		// Identify the hook {{#MyFirsthook:xxxxxxxxx}}
+        $magicWords['FUNCTION1'] = array( 0, 'FUNCTION1' );
         # unless we return true, other parser functions extensions won't get loaded.
         return true;
 }
 
 /**************************************************************************************
- ******************   	  MAIN WIKI TAG <First_hook> application 		***************
+ ************  MAIN WIKI TAG {{#MyFirsthook:Hallo:World}} application   ***************
  **************************************************************************************
  *
  * The parser function itself for the hook 
@@ -122,26 +104,49 @@ function wf_QNAP_First_Example_Magic( &$magicWords, $langCode ) {
  *
  * Purpose : 	Operational part of the extention hook in your wiki
  *
- * Input   : 	#QNAP_First_hook:parameter1|parameter2
+ * Input   : 	#QNAP_First_hook:parameter1|parameter2|parameter3|parameter4|parameter5
  *           
- * Output  : 	parameter1|parameter2
+ * Output  : 	parameter1|parameter2|parameter3|parameter4|parameter5
  *
  * 
  */
-function wf_QBox4u_ParserFunction_Render( &$parser){
+function wf_QBox4u_TagFunctionRender( $input, array $args, Parser $parser, PPFrame $frame  ) {
+	$attr = array();
+    
+    # first of all, retrieve the parameters that we have in the hook
+	foreach( $args as $name => $value )
+		$attr[] = '<strong>' . htmlspecialchars( $name ) . '</strong> = ' . htmlspecialchars( $value );
+	
+	$html_body  = "<strong>My first TAG function</strong><br>\n";
+	$html_body .= "---- \n";
+	$html_body .= "This is my  first typical syntax for a TAG function <strong>&lt;Tag1 arg1='xxx' arg2='xxx'&gt; my data &lt;/Tag1&gt;</strong><br />\n";	
+	$html_body .= 'my Tag hook contains '.count($args)." elements<br>\n";
+	$html_body .= '$attributes[0] '.$attr[0]."<br>\n";
+	$html_body .= '$attributes[1] '.$attr[1]."<br>\n";
+	$html_body .= ' The data between 2 TAGS is:'.htmlspecialchars( $input )."\n";
+
+	$output = $parser->recursiveTagParse( $html_body, $frame );
+	
+  return array( $output, 'noparse' => false, 'isHTML' => false);
+
+}
+
+function wf_QBox4u_ParserFunction_Render( &$parser  ){
 
   # first of all, retrieve the parameters that we have in the hook
-  $attributes = func_get_args();
-  array_shift($attributes); // 0th parameter is the $parser
-  $html_body  = 'my hook contains '.count($attributes).' elements<br>';
-  $html_body .= '$attributes[0] '.($attributes[0]).'<br>';
-  $html_body .= '$attributes[1] '.($attributes[1]).'<br>';
+  $arg = func_get_args();
+  array_shift($arg); // 0th parameter is the $parser
   
-
-  
-  $html_body .= ' Congratuations, you suceeded in creating your first extension';
-  
-  return array( $html_body, 'noparse' => false, 'isHTML' => false);
+	$html_body  = "<strong>My first Parser function</strong><br>\n";
+	$html_body .= "---- \n";
+	$html_body .= "This is my first typical syntax for a Parser function <strong><nowiki>{{#FUNCTION1: arg1 | arg2 }}</nowiki></strong><br>";
+	$html_body .= 'my Parser hook contains '.count($arg)." elements<br />\n";
+	$html_body .= '$attributes[0] <strong>'.($arg[0])."</strong><br>\n";
+	$html_body .= '$attributes[1] <strong>'.($arg[1])."</strong><br>\n";
+	
+	$output = $html_body;
+	
+  return array( $output, 'noparse' => false, 'isHTML' => false);
 }
 
 /**
