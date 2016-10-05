@@ -19,7 +19,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  *  To activate this extension, add the following into your LocalSettings.php file:
- *  require_once( "$IP/extensions/ProtectABCText/ProtectABCText.php");
+ *  require_once( "$IP/extensions/HalloWorld/HalloWorld.php");
  *
  *
  *  @ingroup Extensions
