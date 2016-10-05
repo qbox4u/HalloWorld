@@ -80,7 +80,7 @@ if ( defined( 'MW_SUPPORTS_PARSERFIRSTCALLINIT' ) ) {
 function wf_QBox4u_ParserFunction_Setup( &$Parser ) {
 
         # Set a function hook associating the 'First_hook' magic word with our function 
-	$Parser->setFunctionHook( 'First_hook', 'wf_QBox4u_ParserFunction_Render' );
+	$Parser->setFunctionHook( 'MyFirsthook', 'wf_QBox4u_ParserFunction_Render' );
 	return true;
 }
 
@@ -102,7 +102,7 @@ $wgHooks['LanguageGetMagic'][]       = 'wf_QNAP_First_Example_Magic';
  **/
 function wf_QNAP_First_Example_Magic( &$magicWords, $langCode ) {
 
-        $magicWords['First_hook'] = array( 0, 'First_hook' );
+        $magicWords['MyFirsthook'] = array( 0, 'MyFirsthook' );
         # unless we return true, other parser functions extensions won't get loaded.
         return true;
 }
